@@ -31,6 +31,8 @@ the skill so the agent can consult the original reasoning when it needs to:
 
 Where the sources disagree, the skill picks a side and says why.
 
+<p align="center"><img src="docs/architecture/overview.svg" alt="Architecture overview: clients flow into a FastAPI composition root, vertical slices (auth, retrieval) depend on ports (Protocols) and an I/O-free domain, adapters (SQLAlchemy, Dragonfly, pgvector) implement the ports, with boundary gates (import-linter contracts, ruff banned imports) and the CI gates that keep them non-waivable."></p>
+
 ## What it changes
 
 Asked for a small semver-parsing module, an agent without the skill produced working
@@ -237,6 +239,26 @@ first. It covers the stack and does two things:
   request-scoped clients from the web process, Dragonfly keys without TTLs, and
   pgvector queries using a different distance metric than the index.
 
+## What the libraries do and why
+
+For services on the enforced stack, the library set is fixed — each library earns its
+place. The reasoning below comes from the skill's own stack digest
+([`references/fastapi-taskiq.md`](skills/python-best-practices/references/fastapi-taskiq.md)):
+
+| Library | Why this one | What it gives the stack |
+|---|---|---|
+| FastAPI | The framework owns the boundary and the DI graph: `Path`/`Query`/`Body` parse and reject bad input before the handler runs, and `Depends` wires request-scoped dependencies instead of a hand-built object graph that bypasses lifespan. | Routers with request/response validation (422s for free), lifespan-managed singletons, one exception-handler place to map domain errors to HTTP statuses. |
+| TaskIQ | `BackgroundTasks` runs in-process after the response — a crash or restart loses it. Anything that must survive dispatches through a broker. | Durable task dispatch (`.kiq`) to worker processes that build their own sessions and clients, instead of capturing request-scoped ones. |
+| Dragonfly | Speaks the Redis protocol, so the cache/lock/broker surface stays Redis-shaped while being one data store for the stack. | Cache and locks with keys named per service (`cache:user:{id}`) and TTLs on every transient key — an unbounded TTL is an incident in a year. |
+| PostgreSQL + pgvector | One store for relational data and embeddings, so no second database to operate or synchronize. | Vector similarity search next to transactions; the distance metric is pinned at the adapter (cosine) so queries match the index. |
+| SQLAlchemy 2.0 async | The ORM and engine live in adapters under mypy strict typing, kept out of the domain by the import contracts. | Pooled async sessions; all SQL in the adapter layer, and sessions commit before awaiting unrelated I/O so the pool doesn't drain. |
+| Alembic | Schema changes are code, reviewed and applied like any other change, not hand-run SQL. | Versioned migrations that move with the repo, so a fresh deploy reproduces the schema. |
+| Pydantic v2 | Pydantic models are the public data contract at the wire boundary — request/response models, not dataclasses pretending otherwise. | Validate-once-at-the-boundary; v2 method names (`model_dump`/`model_validate`) pinned to one major version so no validators quietly never run. |
+| mypy --strict | Python has no compiler check that the injected adapter satisfies the port; the type checker does it. | Verifies a `Pg*` adapter satisfies its Protocol where the composition root injects it, and holds the whole layout to the same bar. |
+| import-linter | The contracts are the architecture, made executable: layers (inward only), domain purity (forbidden), slice independence. | `lint-imports` in CI fails the build on inward-import violations — non-waivable; when a gate fires, re-cut the layout rather than edit the contract. |
+| ruff | Lint-grade backup at file granularity: banned imports (`TID251`/`TID252`) forbid `fastapi`/`sqlalchemy`/`httpx` in `domain` and `sqlalchemy` outside `ports/`. | The fast gate every commit passes; the drop-in config in `lints/ruff.toml` is a focused allowlist where every rule is proven to fire (see [Enforcing the rules with ruff](#enforcing-the-rules-with-ruff)). |
+| uv | Virtual environments for everything; pin with ranges and commit the lockfile. | `uv venv` / `uv sync` with `uv.lock` committed, so every agent and CI run lands on the same interpreter. |
+
 ## Enforcing the rules with ruff
 
 The skills teach the rules; the lints keep them from slipping back in. Copy
@@ -322,6 +344,8 @@ beautifulpython/
 │   └── package-openai-plugin.py builds the ChatGPT / Codex directory ZIP
 ├── tests/
 │   └── test_*.py                the checker, harness, and packager test suites
+├── docs/
+│   └── architecture/            rendered HTML diagrams + overview.svg
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── PRIVACY.md
