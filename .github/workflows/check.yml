@@ -28,6 +28,23 @@ jobs:
         run: pip install "ruff==0.12.3"
       - name: Prove every lint in lints/ruff.toml fires
         run: python3 scripts/check-lints.py
+      # import-linter contracts are the unbreakable gate: the config must stay
+      # parseable (contracts themselves run in instantiated backend projects with
+      # `lint-imports`; a removed or emptied contract fails here).
+      - name: Validate import-linter contracts config
+        run: |
+          python3 - <<'EOF'
+          import configparser
+          cp = configparser.ConfigParser()
+          cp.read("lints/import-linter.toml")
+          sections = cp.sections()
+          assert "importlinter" in sections, "missing [importlinter] root section"
+          contracts = [s for s in sections if s.startswith("importlinter:contract:")]
+          assert contracts, "no contracts found in lints/import-linter.toml"
+          assert any("layers" in s for s in contracts), "layered contract missing"
+          assert any("forbidden" in s for s in contracts), "domain-purity contract missing"
+          print("import-linter contracts OK:", contracts)
+          EOF
 
   examples:
     runs-on: ubuntu-latest

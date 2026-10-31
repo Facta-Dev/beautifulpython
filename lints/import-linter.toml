@@ -1,0 +1,57 @@
+# import-linter contracts — drop-in for the backend-python stack.
+#
+# These are the unbreakable hexagonal + vertical-slicing contracts. They cannot be
+# weakened, removed, or waived: if a gate fires, re-cut the layout, do not edit the
+# contract. Developers cannot opt out — CI runs `lint-imports` and fails the build.
+#
+# Place at the repo root (or point --config at it) in an instantiated backend
+# project, after `rename.sh` has substituted <app>/<scope>. This file ships with
+# the skeleton's placeholders intact; import-linter resolves them post-rename.
+#
+#   uvx lint-imports --config lints/import-linter.toml
+
+[importlinter]
+root_package = <app>
+
+# Layered architecture: dependencies point inward only. `<app>.domain` is the
+# bottommost layer (imports nothing above it); `<app>.composition` is the root that
+# may import everything. Each listed layer may import from any layer BELOW it and
+# never from one ABOVE it.
+[importlinter:contract:layers]
+name = Layered architecture (dependencies point inward)
+type = layers
+layers =
+    <app>.composition
+    <app>.<scope>
+    <app>.ports
+    <app>.domain
+
+# The I/O-free wall: the domain ring imports none of the stack, not even a single
+# helper's worth. Extend forbidden_modules with any adapter client the project adds;
+# never remove a line.
+[importlinter:contract:domain-purity]
+name = Domain is I/O-free
+type = forbidden
+source_modules =
+    <app>.domain
+forbidden_modules =
+    fastapi
+    sqlalchemy
+    httpx
+    taskiq
+    redis
+    asyncpg
+    psycopg2
+    sqlalchemy.ext
+    redis.asyncio
+
+# Slices must not import each other (horizontal coupling). One independence contract
+# per pair of leaf slices — enable it once at least two slices exist, listing them
+# explicitly and updating the list with every new slice:
+#
+# [importlinter:contract:slice-independence]
+# name = Slices are independent
+# type = independence
+# modules =
+#     <app>.<scope>
+#     <app>.<other-scope>

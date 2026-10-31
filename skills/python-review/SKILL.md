@@ -42,6 +42,8 @@ If the project's tooling is available, run these and fold the results into the r
 They catch the mechanical issues, which leaves you free for design.
 
 ```bash
+lint-imports                      # when lints/import-linter.toml (or the project's
+                                  # own import-linter config) is present — run FIRST
 ruff check path/
 ruff format --check path/          # or: black --check
 mypy path/                         # or the project's configured checker
@@ -55,6 +57,24 @@ report and review by reading.
 ## 3. What to look for, in priority order
 
 Work through these in order. The first two categories are where real bugs live.
+
+**Architecture contracts (always Must fix, ranked first)**
+
+Broken hexagonal + vertical-slicing contracts are not style: they are the failures the
+whole layout exists to prevent, and they compound silently as the codebase grows. They
+can never be waived, and the fix is re-cutting the layout, not weakening the gate.
+
+- Reversed ring direction: a slice or `ports` module importing from `composition`;
+  anything importing *into* `domain` from above except through its own layer boundary.
+- `domain` importing `fastapi`, `sqlalchemy`, `taskiq`, `redis`, `httpx`, or any
+  adapter's client — the I/O-free wall (`references/fastapi-taskiq.md` layout section).
+- Two slices importing each other (horizontal coupling); shared behavior belongs in
+  `ports`/`domain`, not sideways.
+- A use-case depending on a concrete adapter type instead of the `Protocol` port;
+  composition wiring scattered outside the composition root.
+- Waived gates: `# noqa`/`# type: ignore` that mutes TID251/TID252 or deleted
+  import-linter contracts on the diff — flag the deletion itself, loudly.
+- SQL, vector-distance metrics, or broker clients outside adapter files.
 
 **Correctness**
 
@@ -152,8 +172,9 @@ single most important thing to fix. Say whether ruff/mypy/tests were run.>
 
 How to sort findings:
 
-- **Must fix** means a bug, a swallowed error, a reachable crash, a resource leak, or
-  an API mistake that becomes a breaking change once published.
+- **Must fix** means a broken architecture contract (ranked above everything), a bug,
+  a swallowed error, a reachable crash, a resource leak, or an API mistake that
+  becomes a breaking change once published.
 - **Should fix** means it works but violates a rule with a real cost, such as worse
   error messages, missing types, or a confusing API.
 - **Consider** means style, naming, and polish.

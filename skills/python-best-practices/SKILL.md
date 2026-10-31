@@ -259,8 +259,11 @@ numpy/polars when the data is tabular; they beat hand loops by an unmeasurable m
 ## Architecture: hexagonal + vertical slicing (when the repo uses it)
 
 Backend repos on the FastAPI/TaskIQ/Dragonfly/Postgres stack follow the facta
-backend-python layout. The rules are absolute; `import-linter` and ruff banned
-imports enforce them in CI:
+backend-python layout. The contracts below are **unbreakable and non-waivable**: the
+developers cannot opt out, and neither can you. If an import-linter or banned-import
+gate fires, the fix is to re-cut the layout — never to weaken or delete the contract,
+and never to silence it with `# noqa`, `# type: ignore`, or a lazy `__getattr__`.
+Review treats a broken contract as an automatic Must fix (see `python-review`).
 
 - **Dependencies point inward, only**: composition root -> slices (use-cases) ->
   `ports` (Protocols) -> `domain`. Never the reverse.
