@@ -67,7 +67,8 @@ can never be waived, and the fix is re-cutting the layout, not weakening the gat
 - Reversed ring direction: a slice or `ports` module importing from `composition`;
   anything importing *into* `domain` from above except through its own layer boundary.
 - `domain` importing `fastapi`, `sqlalchemy`, `taskiq`, `redis`, `httpx`, or any
-  adapter's client — the I/O-free wall (`references/fastapi-taskiq.md` layout section).
+  adapter's client — the I/O-free wall (layout rules in the `fastapi-taskiq.md`
+  digest of the python-best-practices skill).
 - Two slices importing each other (horizontal coupling); shared behavior belongs in
   `ports`/`domain`, not sideways.
 - A use-case depending on a concrete adapter type instead of the `Protocol` port;
