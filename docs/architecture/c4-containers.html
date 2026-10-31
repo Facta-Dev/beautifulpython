@@ -5630,11 +5630,21 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       <div class="card">
         <div class="card-header">
           <div class="card-dot rose"></div>
-          <h3>Quality gates</h3>
+          <h3>CI contract gates</h3>
         </div>
         <ul>
-          <li>skills trigger when code imports fastapi or taskiq and read references/fastapi-taskiq.md</li>
-          <li>python-review cites every finding with a source rule and the smallest fix</li>
+          <li>.github/workflows/check.yml: check runs check-skill.py · lints proves every ruff.toml rule fires (check-lints.py, ruff 0.12.3 pinned) then validates the import-linter contracts config · examples compiles every skill/doc example · tests runs unittest incl. tests/contracts</li>
+          <li>a deleted, emptied or weakened import-linter contract fails CI — the contracts are the graph, not a memory</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot rose"></div>
+          <h3>Non-waivable</h3>
+        </div>
+        <ul>
+          <li>&quot;The contracts below are unbreakable and non-waivable: the developers cannot opt out, and neither can you. If an import-linter or banned-import gate fires, the fix is to re-cut the layout — never to weaken or delete the contract, and never to silence it with # noqa, # type: ignore, or a lazy __getattr__.&quot; — skills/python-best-practices/SKILL.md</li>
         </ul>
       </div>
     </div>

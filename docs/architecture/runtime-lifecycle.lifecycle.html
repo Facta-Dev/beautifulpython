@@ -5582,6 +5582,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <ul>
           <li>lifespan runs pydantic-settings Config() → engine → TaskIQ broker → AppState.from_env</li>
           <li>config validates on boot and fails fast before uvicorn binds</li>
+          <li>AppState.from_env wiring lives in the composition root — the layered contract&#39;s top ring; import-linter + TID251 keep the wiring from leaking outward</li>
         </ul>
       </div>
 

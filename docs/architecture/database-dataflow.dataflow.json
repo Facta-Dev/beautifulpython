@@ -166,6 +166,7 @@
       "dot": "cyan",
       "title": "Core state",
       "items": [
+        "the Use-cases → storage edge crosses the ports/adapters boundary: SQL stays in adapters — import-linter's layered contract + ruff TID251 hold it per file",
         "users carries role and provider ids; sessions store hashed opaque refresh tokens",
         "pgvector columns pin one distance metric at the adapter; SQL stays in the adapter layer"
       ]

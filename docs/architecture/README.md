@@ -2,14 +2,15 @@
 
 Interactive Archify diagrams for the stack this repo teaches: FastAPI +
 TaskIQ + Dragonfly (Redis protocol) + Postgres/pgvector + SQLAlchemy 2.0 async,
-laid out hexagonal with vertical slices and enforced by import-linter.
+laid out hexagonal with vertical slices and enforced by import-linter + ruff
+banned imports through the check.yml CI gates (unbreakable, non-waivable).
 Each diagram is a standalone HTML page (open it in any browser); the JSON next
 to it is the source.
 
 | Diagram | Type | What it shows | Source | Rendered |
 |---|---|---|---|---|
-| c4-containers | architecture | Containers: browser/SDK clients, FastAPI API, Dragonfly broker, PostgreSQL + pgvector, TaskIQ worker, OIDC IdP, outside vendors | [json](c4-containers.json) | [html](c4-containers.html) |
-| services-slices | architecture | The uv-workspace package map: composition → slices → ports (Protocols · Pg* adapters) → domain, with broker and task workers | [json](services-slices.architecture.json) | [html](services-slices.architecture.html) |
+| c4-containers | architecture | Containers: browser/SDK clients, FastAPI API, Dragonfly broker, PostgreSQL + pgvector, TaskIQ worker, OIDC IdP, outside vendors — with the check.yml CI contract-gate card (which job runs which gate) and the non-waivable clause | [json](c4-containers.json) | [html](c4-containers.html) |
+| services-slices | architecture | The uv-workspace package map: composition → slices → ports (Protocols · Pg* adapters) → domain, with broker and task workers — ring boundaries labelled with their gates: import-linter layered/purity/independence, TID251 backstop, the CI validator | [json](services-slices.architecture.json) | [html](services-slices.architecture.html) |
 | auth-algorithm | workflow | The auth pipeline as an algorithm: signup → verification code → login gates (authenticate · rate-limit · authorize) → token mint and audit | [json](auth-algorithm.workflow.json) | [html](auth-algorithm.workflow.html) |
 | outbox-algorithm | workflow | Durable task delivery: transactional commit, `.kiq` dispatch through the Dragonfly broker, worker consume, backoff and dead-letter | [json](outbox-algorithm.workflow.json) | [html](outbox-algorithm.workflow.html) |
 | auth-sequence | sequence | Signup-to-login trace: one transaction for the state write, TaskIQ dispatch, code delivery, verify, then token mint with rotating refresh | [json](auth-sequence.sequence.json) | [html](auth-sequence.sequence.html) |

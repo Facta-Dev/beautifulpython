@@ -137,14 +137,14 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "Wire",
+      "label": "Wire — layered contract (top)",
       "wraps": [
         "composition"
       ]
     },
     {
       "kind": "region",
-      "label": "Feature slices",
+      "label": "Slices — independence gate",
       "wraps": [
         "auth",
         "retrieval"
@@ -152,7 +152,7 @@
     },
     {
       "kind": "region",
-      "label": "Ports + platform",
+      "label": "Ports + adapters — inward (layered)",
       "wraps": [
         "ports",
         "broker",
@@ -162,7 +162,7 @@
     },
     {
       "kind": "region",
-      "label": "State",
+      "label": "Wall — domain I/O-free (purity)",
       "wraps": [
         "domain",
         "vectors"
@@ -239,8 +239,9 @@
       "dot": "cyan",
       "title": "Layered slices",
       "items": [
-        "import-linter layers: composition > tasks > auth · retrieval > ports > domain",
-        "ruff TID251/TID252 banned imports back the contracts at file granularity",
+        "lints/import-linter.toml: layered (inward-only) + domain-purity (forbidden) + slice-independence skeleton",
+        "ruff TID251/TID252 banned imports back the contracts at file granularity (no fastapi/sqlalchemy/httpx in domain; sqlalchemy stays in ports/)",
+        "check.yml: the lints job validates the contracts config; the tests job pins it in tests/contracts",
         "domain is I/O-free — asserted by a purity test, not convention"
       ]
     },

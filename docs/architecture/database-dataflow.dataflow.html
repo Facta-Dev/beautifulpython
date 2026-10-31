@@ -5543,6 +5543,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <h3>Core state</h3>
         </div>
         <ul>
+          <li>the Use-cases → storage edge crosses the ports/adapters boundary: SQL stays in adapters — import-linter&#39;s layered contract + ruff TID251 hold it per file</li>
           <li>users carries role and provider ids; sessions store hashed opaque refresh tokens</li>
           <li>pgvector columns pin one distance metric at the adapter; SQL stays in the adapter layer</li>
         </ul>

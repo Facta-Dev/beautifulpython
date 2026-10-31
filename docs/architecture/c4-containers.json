@@ -73,10 +73,17 @@
     },
     {
       "dot": "rose",
-      "title": "Quality gates",
+      "title": "CI contract gates",
       "items": [
-        "skills trigger when code imports fastapi or taskiq and read references/fastapi-taskiq.md",
-        "python-review cites every finding with a source rule and the smallest fix"
+        ".github/workflows/check.yml: check runs check-skill.py · lints proves every ruff.toml rule fires (check-lints.py, ruff 0.12.3 pinned) then validates the import-linter contracts config · examples compiles every skill/doc example · tests runs unittest incl. tests/contracts",
+        "a deleted, emptied or weakened import-linter contract fails CI — the contracts are the graph, not a memory"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Non-waivable",
+      "items": [
+        "\"The contracts below are unbreakable and non-waivable: the developers cannot opt out, and neither can you. If an import-linter or banned-import gate fires, the fix is to re-cut the layout — never to weaken or delete the contract, and never to silence it with # noqa, # type: ignore, or a lazy __getattr__.\" — skills/python-best-practices/SKILL.md"
       ]
     }
   ]

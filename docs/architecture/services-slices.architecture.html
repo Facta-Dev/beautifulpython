@@ -5206,13 +5206,13 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Boundaries (behind everything) -->
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Wire" x="10" y="66" width="190" height="110" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="Wire — layered contract (top)" x="10" y="66" width="190" height="110" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Feature slices" x="260" y="66" width="440" height="110" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="1" data-composition-frame-label="Slices — independence gate" x="260" y="66" width="440" height="110" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Ports + platform" x="10" y="210" width="940" height="110" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="2" data-composition-frame-label="Ports + adapters — inward (layered)" x="10" y="210" width="940" height="110" rx="12" class="c-region" stroke-width="1"/>
 
-        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="State" x="10" y="354" width="690" height="110" rx="12" class="c-region" stroke-width="1"/>
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="3" data-composition-frame-label="Wall — domain I/O-free (purity)" x="10" y="354" width="690" height="110" rx="12" class="c-region" stroke-width="1"/>
 
         <!-- Connection paths (before components for correct z-order) -->
         <g data-graph-role="automatic-crossover" style="--step:0">
@@ -5245,8 +5245,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         </g>
 
         <!-- Components -->
-        <g id="node-composition" data-node-id="composition" data-node-label="composition" tabindex="0" role="button" aria-label="Focus composition, AppState · FastAPI factory, Wire" aria-pressed="false" data-node-kind="backend" data-node-sublabel="AppState · FastAPI factory" data-node-context="Wire">
-          <title>composition · AppState · FastAPI factory · Wire</title>
+        <g id="node-composition" data-node-id="composition" data-node-label="composition" tabindex="0" role="button" aria-label="Focus composition, AppState · FastAPI factory, Wire — layered contract (top)" aria-pressed="false" data-node-kind="backend" data-node-sublabel="AppState · FastAPI factory" data-node-context="Wire — layered contract (top)">
+          <title>composition · AppState · FastAPI factory · Wire — layered contract (top)</title>
           <rect x="40" y="96" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="40" y="96" width="130" height="60" rx="8" class="c-backend" data-animate="node" style="--step:0" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(46 102) scale(0.6875)">
@@ -5256,8 +5256,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="105" y="140" class="t-muted" font-size="7.8" text-anchor="middle">AppState · FastAPI factory</text>
         </g>
 
-        <g id="node-auth" data-node-id="auth" data-node-label="auth" tabindex="0" role="button" aria-label="Focus auth, signup · sessions · RBAC, Feature slices" aria-pressed="false" data-node-kind="backend" data-node-sublabel="signup · sessions · RBAC" data-node-context="Feature slices">
-          <title>auth · signup · sessions · RBAC · Feature slices</title>
+        <g id="node-auth" data-node-id="auth" data-node-label="auth" tabindex="0" role="button" aria-label="Focus auth, signup · sessions · RBAC, Slices — independence gate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="signup · sessions · RBAC" data-node-context="Slices — independence gate">
+          <title>auth · signup · sessions · RBAC · Slices — independence gate</title>
           <rect x="290" y="96" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="290" y="96" width="130" height="60" rx="8" class="c-backend" data-animate="node" style="--step:1" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(296 102) scale(0.6875)">
@@ -5267,8 +5267,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="355" y="140" class="t-muted" font-size="8.4" text-anchor="middle">signup · sessions · RBAC</text>
         </g>
 
-        <g id="node-retrieval" data-node-id="retrieval" data-node-label="retrieval" tabindex="0" role="button" aria-label="Focus retrieval, pgvector search, Feature slices" aria-pressed="false" data-node-kind="backend" data-node-sublabel="pgvector search" data-node-context="Feature slices">
-          <title>retrieval · pgvector search · Feature slices</title>
+        <g id="node-retrieval" data-node-id="retrieval" data-node-label="retrieval" tabindex="0" role="button" aria-label="Focus retrieval, pgvector search, Slices — independence gate" aria-pressed="false" data-node-kind="backend" data-node-sublabel="pgvector search" data-node-context="Slices — independence gate">
+          <title>retrieval · pgvector search · Slices — independence gate</title>
           <rect x="540" y="96" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="540" y="96" width="130" height="60" rx="8" class="c-backend" data-animate="node" style="--step:2" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(546 102) scale(0.6875)">
@@ -5278,8 +5278,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="605" y="140" class="t-muted" font-size="9" text-anchor="middle">pgvector search</text>
         </g>
 
-        <g id="node-ports" data-node-id="ports" data-node-label="ports" tabindex="0" role="button" aria-label="Focus ports, Protocols · Pg* adapters, Ports + platform" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Protocols · Pg* adapters" data-node-context="Ports + platform">
-          <title>ports · Protocols · Pg* adapters · Ports + platform</title>
+        <g id="node-ports" data-node-id="ports" data-node-label="ports" tabindex="0" role="button" aria-label="Focus ports, Protocols · Pg* adapters, Ports + adapters — inward (layered)" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Protocols · Pg* adapters" data-node-context="Ports + adapters — inward (layered)">
+          <title>ports · Protocols · Pg* adapters · Ports + adapters — inward (layered)</title>
           <rect x="40" y="240" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="40" y="240" width="130" height="60" rx="8" class="c-backend" data-animate="node" style="--step:2" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(46 246) scale(0.6875)">
@@ -5289,8 +5289,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="105" y="284" class="t-muted" font-size="8.4" text-anchor="middle">Protocols · Pg* adapters</text>
         </g>
 
-        <g id="node-broker" data-node-id="broker" data-node-label="broker" tabindex="0" role="button" aria-label="Focus broker, TaskIQ · Dragonfly, Ports + platform" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="TaskIQ · Dragonfly" data-node-context="Ports + platform">
-          <title>broker · TaskIQ · Dragonfly · Ports + platform</title>
+        <g id="node-broker" data-node-id="broker" data-node-label="broker" tabindex="0" role="button" aria-label="Focus broker, TaskIQ · Dragonfly, Ports + adapters — inward (layered)" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="TaskIQ · Dragonfly" data-node-context="Ports + adapters — inward (layered)">
+          <title>broker · TaskIQ · Dragonfly · Ports + adapters — inward (layered)</title>
           <rect x="290" y="240" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="290" y="240" width="130" height="60" rx="8" class="c-cloud" data-animate="node" style="--step:4" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(296 246) scale(0.6875)">
@@ -5300,8 +5300,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="355" y="284" class="t-muted" font-size="9" text-anchor="middle">TaskIQ · Dragonfly</text>
         </g>
 
-        <g id="node-tasks" data-node-id="tasks" data-node-label="tasks" tabindex="0" role="button" aria-label="Focus tasks, TaskIQ handlers, Ports + platform" aria-pressed="false" data-node-kind="backend" data-node-sublabel="TaskIQ handlers" data-node-context="Ports + platform">
-          <title>tasks · TaskIQ handlers · Ports + platform</title>
+        <g id="node-tasks" data-node-id="tasks" data-node-label="tasks" tabindex="0" role="button" aria-label="Focus tasks, TaskIQ handlers, Ports + adapters — inward (layered)" aria-pressed="false" data-node-kind="backend" data-node-sublabel="TaskIQ handlers" data-node-context="Ports + adapters — inward (layered)">
+          <title>tasks · TaskIQ handlers · Ports + adapters — inward (layered)</title>
           <rect x="540" y="240" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="540" y="240" width="130" height="60" rx="8" class="c-backend" data-animate="node" style="--step:3" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(546 246) scale(0.6875)">
@@ -5311,8 +5311,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="605" y="284" class="t-muted" font-size="9" text-anchor="middle">TaskIQ handlers</text>
         </g>
 
-        <g id="node-emailer" data-node-id="emailer" data-node-label="emailer" tabindex="0" role="button" aria-label="Focus emailer, Console · SMTP STARTTLS, Ports + platform" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Console · SMTP STARTTLS" data-node-context="Ports + platform">
-          <title>emailer · Console · SMTP STARTTLS · Ports + platform</title>
+        <g id="node-emailer" data-node-id="emailer" data-node-label="emailer" tabindex="0" role="button" aria-label="Focus emailer, Console · SMTP STARTTLS, Ports + adapters — inward (layered)" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="Console · SMTP STARTTLS" data-node-context="Ports + adapters — inward (layered)">
+          <title>emailer · Console · SMTP STARTTLS · Ports + adapters — inward (layered)</title>
           <rect x="790" y="240" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="790" y="240" width="130" height="60" rx="8" class="c-cloud" data-animate="node" style="--step:6" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(796 246) scale(0.6875)">
@@ -5322,8 +5322,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="855" y="284" class="t-muted" font-size="8.8" text-anchor="middle">Console · SMTP STARTTLS</text>
         </g>
 
-        <g id="node-domain" data-node-id="domain" data-node-label="domain" tabindex="0" role="button" aria-label="Focus domain, IDs · Role · DomainError, State" aria-pressed="false" data-node-kind="backend" data-node-sublabel="IDs · Role · DomainError" data-node-context="State">
-          <title>domain · IDs · Role · DomainError · State</title>
+        <g id="node-domain" data-node-id="domain" data-node-label="domain" tabindex="0" role="button" aria-label="Focus domain, IDs · Role · DomainError, Wall — domain I/O-free (purity)" aria-pressed="false" data-node-kind="backend" data-node-sublabel="IDs · Role · DomainError" data-node-context="Wall — domain I/O-free (purity)">
+          <title>domain · IDs · Role · DomainError · Wall — domain I/O-free (purity)</title>
           <rect x="40" y="384" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="40" y="384" width="130" height="60" rx="8" class="c-backend" data-animate="node" style="--step:7" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(46 390) scale(0.6875)">
@@ -5333,8 +5333,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="105" y="428" class="t-muted" font-size="8.4" text-anchor="middle">IDs · Role · DomainError</text>
         </g>
 
-        <g id="node-vectors" data-node-id="vectors" data-node-label="vectors" tabindex="0" role="button" aria-label="Focus vectors, pgvector · cosine index, State" aria-pressed="false" data-node-kind="database" data-node-sublabel="pgvector · cosine index" data-node-context="State">
-          <title>vectors · pgvector · cosine index · State</title>
+        <g id="node-vectors" data-node-id="vectors" data-node-label="vectors" tabindex="0" role="button" aria-label="Focus vectors, pgvector · cosine index, Wall — domain I/O-free (purity)" aria-pressed="false" data-node-kind="database" data-node-sublabel="pgvector · cosine index" data-node-context="Wall — domain I/O-free (purity)">
+          <title>vectors · pgvector · cosine index · Wall — domain I/O-free (purity)</title>
           <rect x="540" y="384" width="130" height="60" rx="8" class="c-mask"/>
           <rect x="540" y="384" width="130" height="60" rx="8" class="c-database" data-animate="node" style="--step:5" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(546 390) scale(0.6875)">
@@ -5376,24 +5376,24 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         </g>
 
         <!-- Boundary labels (foreground masks keep routes out of titles) -->
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="Wire">
-          <rect data-graph-role="structural-frame-label-mask" x="14" y="76" width="31.599999999999998" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="18" y="89" class="t-cloud" font-size="9" font-weight="600">Wire</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="Wire — layered contract (top)">
+          <rect data-graph-role="structural-frame-label-mask" x="14" y="76" width="166.6" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="18" y="89" class="t-cloud" font-size="9" font-weight="600">Wire — layered contract (top)</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Feature slices">
-          <rect data-graph-role="structural-frame-label-mask" x="264" y="76" width="85.6" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="268" y="89" class="t-cloud" font-size="9" font-weight="600">Feature slices</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="region" data-composition-frame-label="Slices — independence gate">
+          <rect data-graph-role="structural-frame-label-mask" x="264" y="76" width="150.4" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="268" y="89" class="t-cloud" font-size="9" font-weight="600">Slices — independence gate</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="2" data-composition-frame-kind="region" data-composition-frame-label="Ports + platform">
-          <rect data-graph-role="structural-frame-label-mask" x="113" y="220" width="96.39999999999999" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="117" y="233" class="t-cloud" font-size="9" font-weight="600">Ports + platform</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="2" data-composition-frame-kind="region" data-composition-frame-label="Ports + adapters — inward (layered)">
+          <rect data-graph-role="structural-frame-label-mask" x="113" y="220" width="199" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="117" y="233" class="t-cloud" font-size="9" font-weight="600">Ports + adapters — inward (layered)</text>
         </g>
 
-        <g data-graph-role="structural-frame-label" data-composition-frame-id="3" data-composition-frame-kind="region" data-composition-frame-label="State">
-          <rect data-graph-role="structural-frame-label-mask" x="14" y="364" width="37" height="16" rx="3" class="c-mask"/>
-          <text data-boundary-label="" x="18" y="377" class="t-cloud" font-size="9" font-weight="600">State</text>
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="3" data-composition-frame-kind="region" data-composition-frame-label="Wall — domain I/O-free (purity)">
+          <rect data-graph-role="structural-frame-label-mask" x="113" y="364" width="177.4" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="117" y="377" class="t-cloud" font-size="9" font-weight="600">Wall — domain I/O-free (purity)</text>
         </g>
 
         <!-- Legend -->
@@ -5595,8 +5595,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <h3>Layered slices</h3>
         </div>
         <ul>
-          <li>import-linter layers: composition &gt; tasks &gt; auth · retrieval &gt; ports &gt; domain</li>
-          <li>ruff TID251/TID252 banned imports back the contracts at file granularity</li>
+          <li>lints/import-linter.toml: layered (inward-only) + domain-purity (forbidden) + slice-independence skeleton</li>
+          <li>ruff TID251/TID252 banned imports back the contracts at file granularity (no fastapi/sqlalchemy/httpx in domain; sqlalchemy stays in ports/)</li>
+          <li>check.yml: the lints job validates the contracts config; the tests job pins it in tests/contracts</li>
           <li>domain is I/O-free — asserted by a purity test, not convention</li>
         </ul>
       </div>

@@ -6,29 +6,142 @@
     "quality_profile": "showcase",
     "output": "docs/architecture/runtime-lifecycle.lifecycle.html"
   },
-  "mainPath": ["boot", "wire", "serve", "ready", "flow"],
+  "mainPath": [
+    "boot",
+    "wire",
+    "serve",
+    "ready",
+    "flow"
+  ],
   "states": [
-    { "id": "boot", "type": "start", "label": "entrypoint", "sublabel": "alembic upgrade head", "step": "01", "tag": "entry" },
-    { "id": "wire", "type": "active", "label": "AppState.from_env", "sublabel": "config · engine · broker", "step": "02" },
-    { "id": "serve", "type": "active", "label": "uvicorn serve", "sublabel": ":8000 · lifespan", "step": "03" },
-    { "id": "ready", "type": "decision", "label": "readyz gate", "sublabel": "SELECT 1 · alembic", "step": "04", "tag": "gate" },
-    { "id": "flow", "type": "success", "label": "Request flow", "sublabel": "slices · Pg* · TaskIQ", "step": "05", "tag": "done" },
-    { "id": "authgate", "type": "waiting", "label": "Auth gate", "sublabel": "auth → rate-limit → authorize", "tag": "pause" },
-    { "id": "drain", "type": "active", "label": "Worker drain", "sublabel": "fetch · ack · 2^n retry", "tag": "automatic" },
-    { "id": "mfail", "type": "failure", "label": "Fatal down", "sublabel": "config · migration fail-closed", "tag": "terminal" },
-    { "id": "degraded", "type": "failure", "label": "503 degraded", "sublabel": "DB unreachable", "tag": "terminal" },
-    { "id": "recovered", "type": "success", "label": "Delivered / Settled", "sublabel": "ack · janitor clean", "tag": "terminal" }
+    {
+      "id": "boot",
+      "type": "start",
+      "label": "entrypoint",
+      "sublabel": "alembic upgrade head",
+      "step": "01",
+      "tag": "entry"
+    },
+    {
+      "id": "wire",
+      "type": "active",
+      "label": "AppState.from_env",
+      "sublabel": "config · engine · broker",
+      "step": "02"
+    },
+    {
+      "id": "serve",
+      "type": "active",
+      "label": "uvicorn serve",
+      "sublabel": ":8000 · lifespan",
+      "step": "03"
+    },
+    {
+      "id": "ready",
+      "type": "decision",
+      "label": "readyz gate",
+      "sublabel": "SELECT 1 · alembic",
+      "step": "04",
+      "tag": "gate"
+    },
+    {
+      "id": "flow",
+      "type": "success",
+      "label": "Request flow",
+      "sublabel": "slices · Pg* · TaskIQ",
+      "step": "05",
+      "tag": "done"
+    },
+    {
+      "id": "authgate",
+      "type": "waiting",
+      "label": "Auth gate",
+      "sublabel": "auth → rate-limit → authorize",
+      "tag": "pause"
+    },
+    {
+      "id": "drain",
+      "type": "active",
+      "label": "Worker drain",
+      "sublabel": "fetch · ack · 2^n retry",
+      "tag": "automatic"
+    },
+    {
+      "id": "mfail",
+      "type": "failure",
+      "label": "Fatal down",
+      "sublabel": "config · migration fail-closed",
+      "tag": "terminal"
+    },
+    {
+      "id": "degraded",
+      "type": "failure",
+      "label": "503 degraded",
+      "sublabel": "DB unreachable",
+      "tag": "terminal"
+    },
+    {
+      "id": "recovered",
+      "type": "success",
+      "label": "Delivered / Settled",
+      "sublabel": "ack · janitor clean",
+      "tag": "terminal"
+    }
   ],
   "transitions": [
-    { "id": "t-boot-wire", "from": "boot", "to": "wire" },
-    { "id": "t-wire-serve", "from": "wire", "to": "serve" },
-    { "id": "t-serve-ready", "from": "serve", "to": "ready" },
-    { "id": "t-ready-flow", "from": "ready", "to": "flow" },
-    { "id": "t-serve-authgate", "from": "serve", "to": "authgate", "variant": "security" },
-    { "id": "t-ready-degraded", "from": "ready", "to": "degraded", "variant": "dashed", "label": "DB down" },
-    { "id": "t-wire-mfail", "from": "wire", "to": "mfail", "variant": "security", "label": "config invalid" },
-    { "id": "t-flow-drain", "from": "flow", "to": "drain", "variant": "security", "label": "enqueue .kiq" },
-    { "id": "t-drain-recovered", "from": "drain", "to": "recovered", "variant": "emphasis" }
+    {
+      "id": "t-boot-wire",
+      "from": "boot",
+      "to": "wire"
+    },
+    {
+      "id": "t-wire-serve",
+      "from": "wire",
+      "to": "serve"
+    },
+    {
+      "id": "t-serve-ready",
+      "from": "serve",
+      "to": "ready"
+    },
+    {
+      "id": "t-ready-flow",
+      "from": "ready",
+      "to": "flow"
+    },
+    {
+      "id": "t-serve-authgate",
+      "from": "serve",
+      "to": "authgate",
+      "variant": "security"
+    },
+    {
+      "id": "t-ready-degraded",
+      "from": "ready",
+      "to": "degraded",
+      "variant": "dashed",
+      "label": "DB down"
+    },
+    {
+      "id": "t-wire-mfail",
+      "from": "wire",
+      "to": "mfail",
+      "variant": "security",
+      "label": "config invalid"
+    },
+    {
+      "id": "t-flow-drain",
+      "from": "flow",
+      "to": "drain",
+      "variant": "security",
+      "label": "enqueue .kiq"
+    },
+    {
+      "id": "t-drain-recovered",
+      "from": "drain",
+      "to": "recovered",
+      "variant": "emphasis"
+    }
   ],
   "cards": [
     {
@@ -36,7 +149,8 @@
       "title": "Boot rail",
       "items": [
         "lifespan runs pydantic-settings Config() → engine → TaskIQ broker → AppState.from_env",
-        "config validates on boot and fails fast before uvicorn binds"
+        "config validates on boot and fails fast before uvicorn binds",
+        "AppState.from_env wiring lives in the composition root — the layered contract's top ring; import-linter + TID251 keep the wiring from leaking outward"
       ]
     },
     {
