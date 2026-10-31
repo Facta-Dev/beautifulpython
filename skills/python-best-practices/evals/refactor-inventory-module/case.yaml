@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: refactor-inventory-module
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  A refactored inventory.py that keeps the public behavior but fixes the
+  problems in the original: the swallowed exception and unclosed file in
+  load, KeyError panics on missing lookups (total_value, restock), the
+  mutable default argument on add_item, module-level mutable state as the
+  only storage, the get_ prefix on a getter, the bool parameter on report,
+  the == True comparison, string concatenation with +, untyped public
+  functions raising vague InventoryError strings, and the unused json import
+  behind a half-working helper. CHANGES.md lists the changes with a one-line
+  reason each.

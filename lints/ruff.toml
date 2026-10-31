@@ -1,0 +1,48 @@
+# BeautifulPython drop-in ruff configuration
+#
+# Copy the [lint] settings into your pyproject.toml under [tool.ruff.lint] (or point
+# ruff at this file with `ruff check --config lints/ruff.toml .`). It makes ruff
+# enforce the rules from the python-best-practices skill that a machine can check.
+# Everything is "warn" by default; make CI strict with:
+#
+#     ruff check --no-fix --exit-code .
+#
+# Silence a rule locally with a reason, which RUF100 plus review require:
+#
+#     value = risky()  # noqa: RUF012 -- pydantic needs the mutable classvar default
+#
+# `noqa` codes: ruff allows rules with a project-level reason in [lint.ignore]; never
+# a bare `# noqa`.
+
+target-version = "py312"
+line-length = 100
+
+[lint]
+# Focused allowlist: every rule here is proven to fire by lints/check/violations.py,
+# and scripts/check-lints.py fails if the two lists drift apart.
+select = [
+  "E501",   # line-too-long (line-length above owns the limit)
+  "E711",   # comparison-to-None: `x == None` -> `x is None`
+  "E712",   # comparison-to-bool: `x == True` -> `if x:`
+  "E722",   # bare-except: catch the specific exception you can handle
+  "F401",   # unused-import
+  "F403",   # undefined-local-with-import-star
+  "F405",   # undefined-local-with-import-star-usage
+  "F841",   # unused-variable
+  "B006",   # mutable default argument
+  "B904",   # raise-without-from-inside-except
+  "EM101",  # raw string in exception: build the message, then raise
+  "EM102",  # f-string in exception: build the message, then raise
+  "PLC0415",# import-outside-top-level: imports are module statements
+  "S101",   # bare assert outside tests (assert is not an input guard)
+  "T201",   # print found: library code logs, it doesn't print
+  "UP004",  # useless-object-inheritance
+  "UP006",  # non-pep585-annotation: list[X], not typing.List[X]
+  "UP035",  # deprecated-import: `from typing import List`
+  "RUF100", # unused noqa directive: `noqa` without a firing rule is deleted
+]
+
+# Tests may assert and print; everything else above holds there too.
+[lint.per-file-ignores]
+"**/tests/**" = ["S101", "T201"]
+"**/test_*.py" = ["S101", "T201"]

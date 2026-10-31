@@ -1,0 +1,7 @@
+.DS_Store
+dist/
+__pycache__/
+lints/check/.ruff_cache/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: semver-library-api
+expected_outcome: |
+  A dependency-free src/semverlite.py (or package) with a Version type that
+  parses semver 2.0 strings (including prerelease and build metadata), orders
+  by semver precedence, and prints back out. The public API follows Python
+  conventions: parsing via from_str or a Version.parse classmethod raising a
+  dedicated VersionError carrying the offending value, __str__, __repr__,
+  __eq__/__hash__ that agree and ignore build metadata, ordering via a sort
+  key that never panics on prerelease vs release, frozen immutable instances,
+  private fields, docstrings with doctest examples users can copy safely, and
+  unit tests covering the precedence rules.

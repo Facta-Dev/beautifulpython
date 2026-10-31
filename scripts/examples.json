@@ -1,0 +1,15 @@
+{
+  "_comment": [
+    "Context that lets each Python block in the docs run on its own. Read by",
+    "scripts/check-examples.py. A file's prelude goes in front of every block in that",
+    "file. A block's template wraps it: {code} is replaced by the block. Blocks are",
+    "numbered from 1 in the order they appear, and first_line must match the block's",
+    "first non-blank line, so adding, moving, or editing a block fails the check until",
+    "this file is updated. Use skip, with a reason, only for a block that cannot run",
+    "as written. Python fragments usually need no entry: any syntactically valid",
+    "block, statement, function, or class compiles on its own, which is why this map",
+    "is empty while check-examples.py still compiles every block that exists.",
+    "A block whose point is deliberately invalid syntax gets a skip here."
+  ],
+  "files": {}
+}

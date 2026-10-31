@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: review-inventory-module
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  REVIEW.md is a prioritized review of inventory.py that does not modify the
+  code. It finds the real problems (the swallowed exception and unclosed file
+  in load, KeyError panics on missing lookups, mutable default arguments,
+  module-level mutable state, an untyped error type, the bool parameter, the
+  == True comparison, string concatenation, and the half-broken json helper),
+  ranks the crash-and-corruption paths above style issues, cites a file:line
+  location and a named rule for each finding, shows each fix as a short code
+  change, groups repeated issues, and says what the code already does well.

@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: port-c-config-parser
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  A Python parser module that passes ported versions of every test in
+  test_config.c, plus a test module with one test per original test. Error
+  codes and out-parameters become a ConfigError exception (or a result value)
+  that carries the failing line number; NULL becomes None; the flags bitmask
+  becomes keyword options or a frozenset of flags; the fixed 256-byte section
+  buffer and manual memory management disappear. Behavior matches the C
+  version, including duplicate handling, case-insensitive keys, value
+  trimming, and rejection of out-of-range integers. PORTING.md maps the API
+  and tests and lists deliberate differences.

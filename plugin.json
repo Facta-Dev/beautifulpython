@@ -1,0 +1,54 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "beautiful-python",
+  "version": "0.1.0",
+  "description": "Write, review, port, and enforce idiomatic Python: three skills distilled from PEP 8 and PEP 20, PEP 257, the Google Python Style Guide, Effective Python, and the typing docs, plus a drop-in ruff and mypy config.",
+  "author": {
+    "name": "Carolina Fogliato",
+    "url": "https://github.com/Facta-Dev"
+  },
+  "homepage": "https://github.com/Facta-Dev/beautifulpython",
+  "repository": "https://github.com/Facta-Dev/beautifulpython",
+  "license": "MIT",
+  "keywords": [
+    "api-design",
+    "best-practices",
+    "code-review",
+    "mypy",
+    "porting",
+    "python",
+    "ruff",
+    "skill",
+    "style-guide"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Beautiful Python",
+        "shortDescription": "Write, review, and port Python",
+        "longDescription": "Three skills for Python developers, distilled from PEP 8 and PEP 20, PEP 257, the Google Python Style Guide, Effective Python, and the typing documentation.\n\npython-best-practices guides new Python code: data modeling, typing, errors, imports, concurrency, packaging, tests, and docs. It includes guidance for the FastAPI + TaskIQ + Dragonfly + Postgres/pgvector backend stack.\n\npython-review reviews a file, module, package, or diff and returns a prioritized report. Every finding cites a file and line, the rule it breaks, and the smallest fix.\n\npython-port ports C, C++, Rust, Go, Java, JavaScript, or TypeScript to idiomatic Python with the same behavior. It ports the original tests first and writes a PORTING.md that lists every deliberate difference.\n\nThe skills contain instructions and reference text only. They make no network calls and collect no data. When linters are available, the skills run ruff, mypy, and pytest on your project; without them, they work from the code alone. A drop-in ruff and mypy config is available in the GitHub repository.",
+        "developerName": "Carolina Fogliato",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Write idiomatic Python",
+          "Review Python code with cited rules",
+          "Port code to Python with the same behavior"
+        ],
+        "websiteURL": "https://github.com/Facta-Dev/beautifulpython",
+        "supportURL": "https://github.com/Facta-Dev/beautifulpython/issues",
+        "privacyPolicyURL": "https://github.com/Facta-Dev/beautifulpython/blob/main/PRIVACY.md",
+        "defaultPrompt": [
+          "Review this Python package and list what to fix first",
+          "Port this C module to idiomatic Python",
+          "Write a Python function that parses this config format"
+        ],
+        "brandColor": "#3776AB",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
+      },
+      "publication": {
+        "release_notes": "Initial release: the three skills, the FastAPI + TaskIQ stack reference, and every Python example compiled in CI."
+      }
+    }
+  }
+}

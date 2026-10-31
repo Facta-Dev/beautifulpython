@@ -1,0 +1,23 @@
+{
+  "name": "beautiful-python",
+  "version": "0.1.0",
+  "description": "Write, review, port, and enforce idiomatic Python: three skills distilled from PEP 8 and PEP 20, PEP 257, the Google Python Style Guide, Effective Python, and the typing docs, plus a drop-in ruff and mypy config.",
+  "author": {
+    "name": "Carolina Fogliato",
+    "url": "https://github.com/Facta-Dev"
+  },
+  "homepage": "https://github.com/Facta-Dev/beautifulpython",
+  "repository": "https://github.com/Facta-Dev/beautifulpython",
+  "license": "MIT",
+  "keywords": [
+    "api-design",
+    "best-practices",
+    "code-review",
+    "mypy",
+    "porting",
+    "python",
+    "ruff",
+    "skill",
+    "style-guide"
+  ]
+}
