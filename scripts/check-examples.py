@@ -33,6 +33,7 @@ DOC_GLOBS = (
     "examples/*.md",
     "skills/*/SKILL.md",
     "skills/*/references/*.md",
+    "skills/*/references/**/*.md",
 )
 FENCE_RE = re.compile(r"^(\s*)(`{3,}|~{3,})\s*([^`\s]*)")
 CODE = "{code}"
@@ -141,11 +142,21 @@ def apply_harness(root: Path, blocks: List[Block], harness: Dict[str, Any]) -> L
     """Attach preludes, templates, and skips. Report harness drift."""
     problems: List[Problem] = []
     files = harness.get("files", {})
+    if not isinstance(files, dict):
+        problems.append(
+            Problem(HARNESS.as_posix(), 1, "error", "files must be a JSON object")
+        )
+        return problems
     by_path: Dict[str, List[Block]] = {}
     for block in blocks:
         by_path.setdefault(block.path, []).append(block)
     harness_path = HARNESS.as_posix()
     for path, entry in files.items():
+        if not isinstance(entry, dict) or not isinstance(entry.get("blocks") or {}, dict):
+            problems.append(
+                Problem(harness_path, 1, "error", "%s: entry must be an object" % path)
+            )
+            continue
         if path not in by_path:
             problems.append(
                 Problem(
@@ -155,6 +166,12 @@ def apply_harness(root: Path, blocks: List[Block], harness: Dict[str, Any]) -> L
             )
             continue
         for key, spec in (entry.get("blocks") or {}).items():
+            if not isinstance(spec, dict):
+                problems.append(
+                    Problem(harness_path, 1, "error",
+                            "%s: block spec must be an object" % path)
+                )
+                continue
             try:
                 index = int(key)
             except ValueError:

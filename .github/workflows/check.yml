@@ -41,8 +41,13 @@ jobs:
           assert "importlinter" in sections, "missing [importlinter] root section"
           contracts = [s for s in sections if s.startswith("importlinter:contract:")]
           assert contracts, "no contracts found in lints/import-linter.toml"
-          assert any("layers" in s for s in contracts), "layered contract missing"
-          assert any("forbidden" in s for s in contracts), "domain-purity contract missing"
+          for section in contracts:
+              ctype = cp.get(section, "type")
+              assert ctype in ("layers", "forbidden", "independence"), (
+                  "contract %s has invalid type %s" % (section, ctype)
+              )
+          assert any(cp.get(s, "type") == "layers" for s in contracts), "layered contract missing"
+          assert any(cp.get(s, "type") == "forbidden" for s in contracts), "domain-purity contract missing"
           print("import-linter contracts OK:", contracts)
           EOF
 
@@ -55,3 +60,16 @@ jobs:
           python-version: "3.12"
       - name: Compile every Python example in the skills and docs
         run: python3 -I scripts/check-examples.py
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # ruff is pinned so test_lints_job_green (e2e) runs instead of skipping in CI.
+      - name: Install ruff (pinned, matching the lints job)
+        run: pip install "ruff==0.12.3"
+      - name: Run the unittest suite (unit, contracts, integration, e2e)
+        run: python3 -I -m unittest discover -s tests -t .

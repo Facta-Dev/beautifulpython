@@ -62,25 +62,30 @@ def run_ruff(config: Path, check_dir: Path, ruff: str) -> Tuple[int, Dict[Tuple[
         "--output-format", "json", str(check_dir),
     ]
     try:
-        result = subprocess.run(argv, capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            argv, capture_output=True, text=True, check=False, timeout=120
+        )
     except OSError:
         return 127, {}, "ruff binary failed to run"
+    except subprocess.TimeoutExpired:
+        return 124, {}, "ruff did not finish within 120s"
     fired: Dict[Tuple[int, str], str] = {}
     try:
         msgs = json.loads(result.stdout)
     except ValueError:
-        msgs = []
+        first = (result.stderr.splitlines() or ["(no stderr)"])[0]
+        return result.returncode, {}, "ruff output is not JSON: %s" % first
     if isinstance(msgs, dict):
         msgs = [msgs]
     for msg in msgs:
-            row = int(msg.get("location", {}).get("row", 0))
-            code = str(msg.get("code"))
-            if not code or code == "None":
-                continue
-            message = str(msg.get("message", "")).split("\n")[0]
-            # The same violation can be reported once per bad item on one line
-            # (two mutable defaults, two flagged names). First report wins.
-            fired.setdefault((row, code), message)
+        row = int(msg.get("location", {}).get("row", 0))
+        code = str(msg.get("code"))
+        if not code or code == "None":
+            continue
+        message = str(msg.get("message", "")).split("\n")[0]
+        # The same violation can be reported once per bad item on one line
+        # (two mutable defaults, two flagged names). First report wins.
+        fired.setdefault((row, code), message)
     return result.returncode, fired, result.stderr
 
 
@@ -119,7 +124,6 @@ def check(root: Path, ruff: str) -> Tuple[List[str], int]:
         _, fired, stderr = run_ruff(config, check_dir, ruff)
     else:
         fired, stderr = {}, ""
-    rows: List[Tuple[str, str]] = []
     matched: Set[Tuple[int, str]] = set()
     proven = 0
     for line, codes in expect_list:
@@ -128,21 +132,17 @@ def check(root: Path, ruff: str) -> Tuple[List[str], int]:
             if code in hits:
                 matched.add((line, code))
                 proven += 1
-                rows.append((code, "fired"))
             else:
                 problems.append(
                     "lints/check/violations.py:%d: expected %s did not fire" % (line, code)
                 )
-                rows.append((code, "MISSING"))
     for (row, code), message in sorted(fired.items()):
         if (row, code) not in matched:
             problems.append(
                 "lints/check/violations.py:%d: unexpected %s: %s" % (row, code, message)
             )
-    unused_err = [ln for ln in stderr.splitlines() if "error" in ln.lower()]
-    if unused_err and not problems:
-        problems.extend(unused_err)
-    del rows  # the table prints through problems above; keep output lean
+    if stderr:
+        problems.extend(stderr.splitlines())
     return problems, proven
 
 

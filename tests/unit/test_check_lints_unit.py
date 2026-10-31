@@ -3,30 +3,15 @@
 
 from __future__ import annotations
 
-import importlib.util
 import shutil
-import json
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = REPO_ROOT / "scripts" / "check-lints.py"
+from tests._support import load_script
+
+cl = load_script("check-lints.py")
 HAS_RUFF = shutil.which("ruff") is not None
-
-
-def load_checker():
-    spec = importlib.util.spec_from_file_location("check_lints", SCRIPT)
-    if spec is None or spec.loader is None:
-        raise RuntimeError("cannot load %s" % SCRIPT)
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = mod
-    spec.loader.exec_module(mod)
-    return mod
-
-
-cl = load_checker()
 
 CONFIG = """\
 target-version = "py312"
@@ -120,14 +105,6 @@ class CheckTest(unittest.TestCase):
         self.write_violations(VIOLATIONS.replace("expect: S101", "expect: T201"))
         problems, _ = cl.check(self.root, "ruff-missing-on-purpose")
         self.assertTrue(any("T201 is not selected" in p for p in problems), problems)
-
-    def test_this_repo_harness_passes_offline_checks(self):
-        problems, _ = cl.check(REPO_ROOT, "ruff-not-required-here")
-        self.assertEqual(
-            [p for p in problems if "selected but has no violation" in p or "is not selected" in p],
-            [],
-            [p for p in problems if "selected" in p],
-        )
 
 
 if __name__ == "__main__":

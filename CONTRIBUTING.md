@@ -44,7 +44,7 @@ frontmatter on each file, and `place-files.sh` references that resolve.
 python3 -I scripts/check-skill.py
 python3 -I scripts/check-examples.py            # needs no tooling
 python3 -I scripts/check-lints.py               # needs ruff on PATH
-python3 -I -m unittest discover -s tests        # stdlib unittest; pytest also works
+python3 -I -m unittest discover -s tests -t .    # stdlib unittest; pytest also works
 ```
 
 All four must pass before a push. Bump `version` in both plugin manifests for any

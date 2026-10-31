@@ -371,7 +371,7 @@ Validate before pushing.
 python3 -I scripts/check-skill.py                 # skills, evals, manifests
 python3 -I scripts/check-examples.py              # compile every Python example
 python3 -I scripts/check-lints.py                 # needs ruff on PATH
-python3 -I -m unittest discover -s tests          # the checker's own tests
+python3 -I -m unittest discover -s tests -t .     # the checker's own tests
 claude plugin validate .
 ```
 
