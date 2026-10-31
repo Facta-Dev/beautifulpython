@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "beautifulpython — Outbox Algorithm",
+    "quality_profile": "showcase",
+    "output": "docs/architecture/outbox-algorithm.workflow.html"
+  },
+  "lanes": [
+    { "id": "producers", "label": "Writers" },
+    { "id": "queue", "label": "Broker" },
+    { "id": "workers", "label": "Worker" },
+    { "id": "delivery", "label": "Delivery" },
+    { "id": "ledger", "label": "Ledger" }
+  ],
+  "phases": [
+    { "id": "dispatch", "label": "Dispatch", "fromCol": 0, "toCol": 1 },
+    { "id": "drain", "label": "Consume", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "settlep", "label": "Deliver + settle", "fromCol": 4, "toCol": 5 }
+  ],
+  "mainPath": ["emit", "enqueue", "claim", "run", "deliver", "settle"],
+  "nodes": [
+    { "id": "emit", "lane": "producers", "col": 0, "type": "backend", "label": "Slice use-cases", "sublabel": "auth · retrieval" },
+    { "id": "enqueue", "lane": "queue", "col": 1, "type": "database", "label": "Dragonfly", "sublabel": ".kiq at commit" },
+    { "id": "claim", "lane": "workers", "col": 2, "type": "backend", "label": "TaskIQ worker", "sublabel": "broker DI · own session" },
+    { "id": "run", "lane": "workers", "col": 3, "type": "backend", "label": "Run handler", "sublabel": "async-safe work" },
+    { "id": "deliver", "lane": "delivery", "col": 4, "type": "cloud", "label": "Delivery port", "sublabel": "mail · webhook" },
+    { "id": "backoff", "lane": "delivery", "col": 2, "type": "backend", "label": "Backoff", "sublabel": "2^n ± jitter" },
+    { "id": "settle", "lane": "ledger", "col": 5, "type": "database", "label": "Settle", "sublabel": "sent · failed" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "emit", "to": "enqueue", "route": "drop" },
+    { "id": "e2", "from": "enqueue", "to": "claim", "route": "drop", "label": "poll broker", "labelSegment": 1, "labelDy": 12 },
+    { "id": "e3", "from": "claim", "to": "run", "label": "due tasks" },
+    { "id": "e4", "from": "run", "to": "deliver", "label": "hand off" },
+    { "id": "e5", "from": "deliver", "to": "settle", "label": "ack" },
+    { "id": "e6", "from": "deliver", "to": "backoff", "label": "failed" },
+    { "id": "e7", "from": "backoff", "to": "claim", "route": "drop", "fromSide": "top", "toSide": "bottom", "label": "requeued 2^n" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Transactional dispatch",
+      "items": [
+        "slice use-cases dispatch .kiq through the TaskIQ broker only after the state-write commit",
+        "Dragonfly holds the queue; keys are service-namespaced with TTLs on transient entries"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Consume",
+      "items": [
+        "worker claims with broker DI; handlers build their own session, engine and clients",
+        "async-safe work only: blocking calls move to anyio.to_thread or stay out of handlers"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Outcomes",
+      "items": [
+        "success settles sent with an ack; failure requeues with 2^n-minute backoff and jitter",
+        "at max_retries the task dead-letters to failed; a janitor sweep purges expired rows hourly"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "beautifulpython — Auth Sequence",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "signup_enqueue",
+        "label": "Signup + enqueue",
+        "focus": ["client", "api", "pg", "broker"],
+        "note": "one transaction stores the user and code row, then .kiq dispatches the mail job"
+      },
+      {
+        "id": "deliver_code",
+        "label": "Deliver code",
+        "focus": ["worker", "broker", "mail"],
+        "note": "the TaskIQ worker consumes the email job and ships the 6-digit code"
+      },
+      {
+        "id": "verify_login",
+        "label": "Verify + login",
+        "focus": ["client", "api", "pg"],
+        "note": "code check, then gates and token mint with rotating refresh"
+      }
+    ],
+    "output": "docs/architecture/auth-sequence.sequence.html"
+  },
+  "participants": [
+    { "id": "client", "type": "external", "label": "Client", "sublabel": "SPA · SDK" },
+    { "id": "api", "type": "backend", "label": "API", "sublabel": "FastAPI · Depends" },
+    { "id": "pg", "type": "database", "label": "PostgreSQL 16", "sublabel": "SQLAlchemy 2.0 async" },
+    { "id": "broker", "type": "messagebus", "label": "Dragonfly", "sublabel": "TaskIQ broker" },
+    { "id": "worker", "type": "backend", "label": "TaskIQ worker", "sublabel": "email · janitor" },
+    { "id": "mail", "type": "external", "label": "Mail vendor", "sublabel": "SMTP · console" }
+  ],
+  "segments": [
+    { "from": 150, "to": 292, "label": "Signup + dispatch" },
+    { "from": 308, "to": 494, "label": "Deliver code" },
+    { "from": 508, "to": 722, "label": "Verify + login" }
+  ],
+  "messages": [
+    { "id": "m1", "from": "client", "to": "api", "y": 168, "label": "POST /auth/signup", "variant": "emphasis" },
+    { "id": "m2", "from": "api", "to": "pg", "y": 206, "label": "INSERT user + verification code row" },
+    { "id": "m3", "from": "api", "to": "broker", "y": 244, "label": ".kiq dispatch email.send" },
+    { "id": "m4", "from": "api", "to": "client", "y": 282, "label": "201 · job queued", "variant": "return" },
+    { "id": "m5", "from": "worker", "to": "broker", "y": 324, "label": "consume email.send" },
+    { "id": "m6", "from": "broker", "to": "worker", "y": 362, "label": "payload · ack pending", "variant": "return" },
+    { "id": "m7", "from": "worker", "to": "mail", "y": 400, "label": "render verify_email → send" },
+    { "id": "m8", "from": "mail", "to": "client", "y": 438, "label": "email · 6-digit code" },
+    { "id": "m9", "from": "worker", "to": "pg", "y": 476, "label": "record delivery state" },
+    { "id": "m10", "from": "client", "to": "api", "y": 516, "label": "POST /auth/verify {code}" },
+    { "id": "m11", "from": "api", "to": "pg", "y": 554, "label": "check attempts · TTL · consume" },
+    { "id": "m12", "from": "pg", "to": "api", "y": 592, "label": "is_verified", "variant": "return" },
+    { "id": "m13", "from": "client", "to": "api", "y": 632, "label": "POST /auth/login" },
+    { "id": "m14", "from": "api", "to": "pg", "y": 670, "label": "argon2 · rate-limit · rotate refresh" },
+    { "id": "m15", "from": "api", "to": "client", "y": 708, "label": "access 900s · rotating refresh", "variant": "emphasis" }
+  ],
+  "activations": [
+    { "participant": "api", "from": 162, "to": 714, "type": "backend" },
+    { "participant": "pg", "from": 200, "to": 250, "type": "database" },
+    { "participant": "broker", "from": 238, "to": 368, "type": "messagebus" },
+    { "participant": "worker", "from": 318, "to": 482, "type": "backend" },
+    { "participant": "mail", "from": 394, "to": 444, "type": "external" },
+    { "participant": "pg", "from": 548, "to": 598, "type": "database" },
+    { "participant": "pg", "from": 664, "to": 714, "type": "database" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Commit then dispatch",
+      "items": [
+        "signup writes the user and the code row in one AsyncSession transaction; the .kiq dispatch rides after the commit",
+        "the TaskIQ worker consumes the email.send task from the Dragonfly broker"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Code lifecycle",
+      "items": [
+        "codes expire in 24h, cap at 5 wrong guesses and are consumed on verify",
+        "resend never reveals whether the account exists; a verified email answers 409"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Login + tokens",
+      "items": [
+        "password first — one constant 401; then inactive → blocked → unverified, each a stable 403",
+        "access JWT 900s; refresh is an opaque token rotated in place (replay fails the CAS)"
+      ]
+    }
+  ]
+}

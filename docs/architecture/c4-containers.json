@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "beautifulpython — Container Architecture",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "request-path",
+        "label": "Request path",
+        "focus": ["web-client", "api", "pg"],
+        "note": "HTTPS into the hexagonal API; durable state stays in Postgres and pgvector."
+      },
+      {
+        "id": "task-path",
+        "label": "Task path",
+        "focus": ["api", "dragonfly", "worker"],
+        "note": "TaskIQ .kiq hops through the Dragonfly broker; workers own their sessions."
+      },
+      {
+        "id": "outbound",
+        "label": "Outbound ports",
+        "focus": ["worker", "mailer", "otel"],
+        "note": "Mail and tracing leave through adapter ports."
+      }
+    ],
+    "output": "docs/architecture/c4-containers.html"
+  },
+  "components": [
+    { "id": "web-client", "type": "frontend", "label": "Browser Client", "sublabel": "SPA · SDK", "pos": [40, 300], "size": [130, 60] },
+    { "id": "oidc", "type": "security", "label": "OIDC IdP", "sublabel": "OAuth2 · JWT", "pos": [40, 110], "size": [130, 64] },
+    { "id": "sdk", "type": "frontend", "label": "SDK + CLI", "sublabel": "httpx typed client", "pos": [40, 440], "size": [130, 60] },
+    { "id": "api", "type": "backend", "label": "API", "sublabel": "FastAPI · uv :8000", "pos": [300, 300], "size": [150, 64] },
+    { "id": "dragonfly", "type": "database", "label": "Dragonfly", "sublabel": "Redis protocol · cache + job broker", "pos": [300, 150], "size": [150, 60] },
+    { "id": "pg", "type": "database", "label": "PostgreSQL 16", "sublabel": "pgvector · SQLAlchemy 2.0 async", "pos": [540, 300], "size": [170, 60] },
+    { "id": "worker", "type": "backend", "label": "TaskIQ Worker", "sublabel": "broker DI · own sessions", "pos": [840, 300], "size": [150, 60] },
+    { "id": "mailer", "type": "external", "label": "Mail Vendor", "sublabel": "SMTP adapter", "pos": [840, 440], "size": [150, 60] },
+    { "id": "otel", "type": "external", "label": "OTLP Collector", "sublabel": "tracing", "pos": [1060, 440], "size": [130, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Runtime compose stack", "wraps": ["api", "dragonfly", "pg", "worker"] },
+    { "kind": "region", "label": "External vendors", "wraps": ["mailer", "otel"] }
+  ],
+  "connections": [
+    { "id": "oidc-to-api", "from": "oidc", "to": "api", "label": "OAuth2 callback", "variant": "security", "fromSide": "bottom", "toSide": "top", "via": [[105, 246], [375, 246]], "labelAt": [240, 232] },
+    { "id": "web-to-api", "from": "web-client", "to": "api", "label": "HTTPS /api", "variant": "emphasis" },
+    { "id": "sdk-to-api", "from": "sdk", "to": "api", "label": "typed HTTP + Bearer", "variant": "dashed", "fromSide": "top", "toSide": "bottom" },
+    { "id": "api-to-dragonfly", "from": "api", "to": "dragonfly", "label": "cache · .kiq", "fromSide": "top", "toSide": "bottom", "labelDy": -68 },
+    { "id": "api-to-pg", "from": "api", "to": "pg", "label": "async SQL", "variant": "emphasis" },
+    { "id": "dragonfly-to-worker", "from": "dragonfly", "to": "worker", "label": "consume tasks", "variant": "dashed", "fromSide": "right", "toSide": "top", "via": [[720, 180], [915, 180], [915, 246]], "labelAt": [580, 166] },
+    { "id": "worker-to-pg", "from": "worker", "to": "pg", "label": "own AsyncSession", "toSide": "right" },
+    { "id": "worker-to-mailer", "from": "worker", "to": "mailer", "label": "send mail", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "labelDy": 58 },
+    { "id": "worker-to-otel", "from": "worker", "to": "otel", "label": "OTLP spans", "variant": "dashed", "fromSide": "right", "toSide": "top", "labelDx": 40, "labelDy": 30 }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Build",
+      "items": [
+        "uv workspace packs feature slices into one lockfile",
+        "import-linter layered + forbidden + independence contracts are the dependency graph",
+        "lints/ruff.toml and lints/mypy.ini ship beside the skills"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Run",
+      "items": [
+        "FastAPI :8000 serves; TaskIQ workers consume the same Dragonfly broker",
+        "engine, pools and broker are app-scoped singletons wired by the composition root",
+        "Dragonfly keys name their service; transient ones carry a TTL"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Quality gates",
+      "items": [
+        "skills trigger when code imports fastapi or taskiq and read references/fastapi-taskiq.md",
+        "python-review cites every finding with a source rule and the smallest fix"
+      ]
+    }
+  ]
+}

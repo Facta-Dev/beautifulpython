@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "beautifulpython — Services & Slices",
+    "quality_profile": "showcase",
+    "output": "docs/architecture/services-slices.architecture.html"
+  },
+  "components": [
+    {
+      "id": "composition",
+      "type": "backend",
+      "label": "composition",
+      "sublabel": "AppState · FastAPI factory",
+      "pos": [
+        40,
+        96
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "auth",
+      "type": "backend",
+      "label": "auth",
+      "sublabel": "signup · sessions · RBAC",
+      "pos": [
+        290,
+        96
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "retrieval",
+      "type": "backend",
+      "label": "retrieval",
+      "sublabel": "pgvector search",
+      "pos": [
+        540,
+        96
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "ports",
+      "type": "backend",
+      "label": "ports",
+      "sublabel": "Protocols · Pg* adapters",
+      "pos": [
+        40,
+        240
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "broker",
+      "type": "cloud",
+      "label": "broker",
+      "sublabel": "TaskIQ · Dragonfly",
+      "pos": [
+        290,
+        240
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "tasks",
+      "type": "backend",
+      "label": "tasks",
+      "sublabel": "TaskIQ handlers",
+      "pos": [
+        540,
+        240
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "emailer",
+      "type": "cloud",
+      "label": "emailer",
+      "sublabel": "Console · SMTP STARTTLS",
+      "pos": [
+        790,
+        240
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "domain",
+      "type": "backend",
+      "label": "domain",
+      "sublabel": "IDs · Role · DomainError",
+      "pos": [
+        40,
+        384
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "vectors",
+      "type": "database",
+      "label": "vectors",
+      "sublabel": "pgvector · cosine index",
+      "pos": [
+        540,
+        384
+      ],
+      "size": [
+        130,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Wire",
+      "wraps": [
+        "composition"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Feature slices",
+      "wraps": [
+        "auth",
+        "retrieval"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Ports + platform",
+      "wraps": [
+        "ports",
+        "broker",
+        "tasks",
+        "emailer"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "State",
+      "wraps": [
+        "domain",
+        "vectors"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "c1",
+      "from": "composition",
+      "to": "auth",
+      "label": "routers · Depends",
+      "labelAt": [
+        230,
+        172
+      ]
+    },
+    {
+      "id": "c2",
+      "from": "composition",
+      "to": "ports",
+      "label": "AppState wiring",
+      "labelAt": [
+        105,
+        200
+      ]
+    },
+    {
+      "id": "c3",
+      "from": "retrieval",
+      "to": "tasks",
+      "label": "enqueue embed jobs",
+      "variant": "dashed"
+    },
+    {
+      "id": "c4",
+      "from": "tasks",
+      "to": "broker",
+      "label": "consume .kiq"
+    },
+    {
+      "id": "c5",
+      "from": "tasks",
+      "to": "vectors",
+      "label": "cosine SQL",
+      "labelAt": [
+        605,
+        344
+      ]
+    },
+    {
+      "id": "c6",
+      "from": "tasks",
+      "to": "emailer",
+      "label": "render → Sender",
+      "labelAt": [
+        720,
+        254
+      ]
+    },
+    {
+      "id": "c7",
+      "from": "ports",
+      "to": "domain",
+      "label": "entities · errors",
+      "labelAt": [
+        105,
+        344
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Layered slices",
+      "items": [
+        "import-linter layers: composition > tasks > auth · retrieval > ports > domain",
+        "ruff TID251/TID252 banned imports back the contracts at file granularity",
+        "domain is I/O-free — asserted by a purity test, not convention"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Ports",
+      "items": [
+        "Pg* adapters own all SQL; sessions commit before awaiting unrelated I/O",
+        "TaskIQ handlers build their own sessions and clients, not captured from the web process"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Wire",
+      "items": [
+        "AppState.from_env wires Pg adapters in prod; with_repos injects fakes in tests",
+        "Dragonfly keys are service-namespaced; transient keys carry a TTL"
+      ]
+    }
+  ]
+}

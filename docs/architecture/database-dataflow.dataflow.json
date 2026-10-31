@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "beautifulpython Dataflow — identity + delivery",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1068,
+      520
+    ],
+    "output": "docs/architecture/database-dataflow.dataflow.html"
+  },
+  "stages": [
+    {
+      "label": "Clients"
+    },
+    {
+      "label": "Use-cases"
+    },
+    {
+      "label": "Storage"
+    },
+    {
+      "label": "Queue"
+    },
+    {
+      "label": "Delivery"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "client",
+      "type": "external",
+      "label": "Auth client",
+      "sublabel": "SPA · SDK",
+      "stage": 0,
+      "row": 0
+    },
+    {
+      "id": "embeddings",
+      "type": "external",
+      "label": "Embedding API",
+      "sublabel": "vectors in",
+      "stage": 0,
+      "row": 1
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Use-case services",
+      "stage": 1,
+      "row": 0,
+      "width": 150,
+      "sublabel": "auth · retrieval"
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "users · sessions",
+      "sublabel": "SQLAlchemy 2.0 async · tx",
+      "stage": 2,
+      "row": 0
+    },
+    {
+      "id": "vectors",
+      "type": "database",
+      "label": "pgvector",
+      "sublabel": "cosine index",
+      "stage": 2,
+      "row": 1,
+      "tag": "ann"
+    },
+    {
+      "id": "queue",
+      "type": "database",
+      "label": "Dragonfly",
+      "sublabel": "TaskIQ broker",
+      "stage": 3,
+      "row": 0,
+      "tag": "broker"
+    },
+    {
+      "id": "worker",
+      "type": "backend",
+      "label": "TaskIQ worker",
+      "sublabel": "own clients · TTL keys",
+      "stage": 3,
+      "row": 2
+    },
+    {
+      "id": "mailer",
+      "type": "cloud",
+      "label": "emailer",
+      "sublabel": "Console · STARTTLS",
+      "stage": 4,
+      "row": 0
+    }
+  ],
+  "flows": [
+    {
+      "id": "f1",
+      "from": "client",
+      "to": "api",
+      "label": "REST + Bearer",
+      "route": "straight"
+    },
+    {
+      "id": "f2",
+      "from": "embeddings",
+      "to": "api",
+      "label": "vectors"
+    },
+    {
+      "id": "f3",
+      "from": "api",
+      "to": "pg",
+      "label": "identity rows",
+      "route": "straight"
+    },
+    {
+      "id": "f4",
+      "from": "api",
+      "to": "vectors",
+      "label": "vectors · cosine"
+    },
+    {
+      "id": "f5",
+      "from": "api",
+      "to": "queue",
+      "label": "dispatch .kiq",
+      "route": "top-channel",
+      "variant": "emphasis",
+      "channelY": 100
+    },
+    {
+      "id": "f6",
+      "from": "queue",
+      "to": "worker",
+      "label": "fetch pending",
+      "labelAt": [
+        697,
+        214
+      ]
+    },
+    {
+      "id": "f7",
+      "from": "worker",
+      "to": "mailer",
+      "label": "render → send"
+    },
+    {
+      "id": "f8",
+      "from": "worker",
+      "to": "queue",
+      "label": "ack · retry",
+      "route": "straight",
+      "variant": "dashed",
+      "labelAt": [
+        800,
+        225
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Core state",
+      "items": [
+        "users carries role and provider ids; sessions store hashed opaque refresh tokens",
+        "pgvector columns pin one distance metric at the adapter; SQL stays in the adapter layer"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Queue",
+      "items": [
+        "dragonfly holds the TaskIQ queue; keys are service-namespaced with TTLs",
+        ".kiq dispatch rides after the state-write commit — no dual-write gap"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Delivery + ledgers",
+      "items": [
+        "failed sends back off 2^n and dead-letter at max_retries; delivery state is recorded in Postgres",
+        "the janitor purges expired sessions and code rows hourly"
+      ]
+    }
+  ]
+}
