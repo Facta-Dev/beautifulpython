@@ -19,5 +19,10 @@
     "ruff",
     "skill",
     "style-guide"
+  ],
+  "skills": [
+    "./skills/python-best-practices",
+    "./skills/python-review",
+    "./skills/python-port"
   ]
 }
