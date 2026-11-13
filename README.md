@@ -441,6 +441,21 @@ MIT licensed (see [LICENSE](LICENSE)).
 The repo is a sibling of [BeautifulRust](https://github.com/morganlinton/BeautifulRust),
 which holds the Rust half of this port and the shape this project follows.
 
+## Siblings
+
+Beautiful Python is part of the Beautiful series for the facta playbooks:
+[beautiful-j2ee](https://github.com/Facta-Dev/beautiful-j2ee),
+[beautifulandroid](https://github.com/Facta-Dev/beautifulandroid),
+[beautifulcli](https://github.com/Facta-Dev/beautifulcli),
+[beautifulextension](https://github.com/Facta-Dev/beautifulextension),
+[beautifulgo](https://github.com/Facta-Dev/beautifulgo),
+[beautifulios](https://github.com/Facta-Dev/beautifulios),
+[beautifulnodejs](https://github.com/Facta-Dev/beautifulnodejs),
+[beautifulqt](https://github.com/Facta-Dev/beautifulqt),
+[beautifulreact](https://github.com/Facta-Dev/beautifulreact),
+[beautifulreactnative](https://github.com/Facta-Dev/beautifulreactnative),
+[beautifulrust](https://github.com/Facta-Dev/beautifulrust).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
