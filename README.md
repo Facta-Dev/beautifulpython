@@ -33,6 +33,21 @@ Where the sources disagree, the skill picks a side and says why.
 
 <p align="center"><img src="docs/architecture/overview.svg" alt="Architecture overview: clients flow into a FastAPI composition root, vertical slices (auth, retrieval) depend on ports (Protocols) and an I/O-free domain, adapters (SQLAlchemy, Dragonfly, pgvector) implement the ports, with boundary gates (import-linter contracts, ruff banned imports) and the CI gates that keep them non-waivable."></p>
 
+## The playbooks
+
+These skills are the runnable, machine-checked enforcement of the
+[facta playbooks](https://github.com/Facta-Dev/ai-coding-playbook). That
+repository carries the sixteen root playbooks — backend, Java/J2EE, frontend,
+React Native, Android/Kotlin, iOS/Swift, desktop Qt, CLI, Chrome extension,
+URLs, tests, security, audit, install, REA and the Claude Code kit — plus the
+nine runnable kits (Go, Rust, Node.js, Python, Java, extension, desktop,
+frontend-mobile, mobile-android), the model-routing guide and the
+instruction-budget tooling. Start with
+[`PLAYBOOK_BACKEND.md`](https://github.com/Facta-Dev/ai-coding-playbook/blob/main/PLAYBOOK_BACKEND.md)
+for this stack, then use this repository as the worked example. The shared
+contracts (`PLAYBOOK_URLS.md`, `PLAYBOOK_TESTS.md`, `PLAYBOOK_SECURITY.md`,
+`PLAYBOOK_AUDIT.md`, `PLAYBOOK_CLAUDE_CODE.md`) apply across the series.
+
 ## What it changes
 
 Asked for a small semver-parsing module, an agent without the skill produced working
