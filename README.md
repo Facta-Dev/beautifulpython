@@ -352,6 +352,23 @@ beautifulpython/
 └── README.md
 ```
 
+## Architecture diagrams
+
+The repository ships eight [Archify](https://github.com/tt-a1i/archify) diagrams under
+[`docs/architecture/`](docs/architecture/README.md), each a standalone HTML page you can
+open, explore and share; the `overview.svg` above is the visual summary.
+
+| Diagram | What it shows |
+|---|---|
+| [c4-containers](docs/architecture/c4-containers.html) | Clients, the FastAPI API, Dragonfly, PostgreSQL/pgvector, the TaskIQ worker, OIDC and vendors |
+| [services-slices](docs/architecture/services-slices.architecture.html) | The uv workspace: composition, slices, ports, domain, broker and workers, with the import-linter walls |
+| [auth-algorithm](docs/architecture/auth-algorithm.workflow.html) | Signup, verification code, login gates and token mint/audit |
+| [outbox-algorithm](docs/architecture/outbox-algorithm.workflow.html) | The transactional commit, TaskIQ dispatch through Dragonfly, retries and dead-letter |
+| [auth-sequence](docs/architecture/auth-sequence.sequence.html) | The signup-to-login trace with the TaskIQ dispatch, code delivery, verify and token rotation |
+| [outbox-sequence](docs/architecture/outbox-sequence.sequence.html) | The producer, broker and worker trace with ack, retry policy and the janitor sweep |
+| [database-dataflow](docs/architecture/database-dataflow.dataflow.html) | Clients → use cases → Postgres/pgvector → Dragonfly → email delivery |
+| [runtime-lifecycle](docs/architecture/runtime-lifecycle.lifecycle.html) | Config boot, lifespan wiring, readyz, request flow, worker drain and the failure endings |
+
 ## Testing the skills
 
 `skills/python-best-practices/evals/` holds two test cases in the layout `claude plugin
