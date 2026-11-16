@@ -5,3 +5,8 @@ lints/check/.ruff_cache/
 .ruff_cache/
 .mypy_cache/
 .pytest_cache/
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/install-state.json
+.claude/backups/
+.claude/logs/
