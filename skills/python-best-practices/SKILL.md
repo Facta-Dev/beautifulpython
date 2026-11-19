@@ -12,6 +12,11 @@ description: >-
 
 # Python best practices
 
+> Playbook set: start with [`PLAYBOOK_MASTER.md`](https://github.com/Facta-Dev/ai-coding-playbook/blob/main/PLAYBOOK_MASTER.md) —
+> the catalog, precedence and cross-playbook invariants — then
+> [`PLAYBOOK_PYTHON.md`](https://github.com/Facta-Dev/ai-coding-playbook/blob/main/PLAYBOOK_PYTHON.md). This skill is the runnable companion of that
+> contract.
+
 Distilled from five Python style and design sources, with a digest of each in
 `references/`. Where they disagree, this file says which to follow and why.
 
