@@ -73,7 +73,7 @@ CHECKLIST
   [ ] pydantic v2 request/response models declared in http.py
   [ ] make generate run and specs/openapi.yaml committed; make gen-check clean
   [ ] route registered in module.py register() (not inline in the bin)
-  [ ] envelope {"detail","code"} covers the failure modes; no leaky 500s
+  [ ] envelope {"error":{"code","message"}} covers the failure modes; no leaky 500s
   [ ] Deps unchanged OR new field is a use case / port wired in src/app/bin/api.py
 ```
 

@@ -16,7 +16,7 @@ app, layers the `app.platform.authx.require_auth` dependency (and
 `require_role(Role.ADMIN)` on admin routes) on the protected routes, and each
 handler in `src/app/features/<slug>/http.py` validates the request with
 pydantic v2, reads the `Identity` the dependency resolved, calls the slice's
-use case, and maps the result to the `{"detail","code"}` envelope. Every
+use case, and maps the result to the `{"error":{"code","message"}}` envelope. Every
 claim in the trace cites the file and line it came from; nothing about the
 current route table, dependency wiring, or `Deps` field set is ever invented
 or assumed from memory.

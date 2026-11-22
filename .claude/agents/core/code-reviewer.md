@@ -18,7 +18,7 @@ coherent: every database access goes through the slice's `queries.py`
 (`sqlalchemy.text()` statements with bound parameters) — never a
 runtime-interpolated SQL string — and no error path leaks an internal detail
 (a SQLAlchemy error, a stack trace, a raw DB constraint name) into the
-`{"detail","code"}` envelope body. A change that regresses the gate or an
+`{"error":{"code","message"}}` envelope body. A change that regresses the gate or an
 invariant is a BLOCK regardless of how small the diff looks.
 
 ## Expertise Areas
@@ -34,7 +34,7 @@ invariant is a BLOCK regardless of how small the diff looks.
   runtime-interpolated SQL string (an f-string or `%` formatting a user value
   into the statement) is always a BLOCK (SQL-injection surface, no
   type-checked call site)
-- Error-redaction review: the `{"detail","code"}` envelope never carries a
+- Error-redaction review: the `{"error":{"code","message"}}` envelope never carries a
   raw SQLAlchemy error, an aggregate error dump, or a Postgres constraint
   name — internal detail is logged (the JSON logger), the client gets a
   stable `Code` value

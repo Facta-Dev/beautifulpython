@@ -38,7 +38,7 @@ shared mutable state across tests beyond the per-test `world` fixture).
   the `client` fixture from `tests/conftest.py` (a real server on an
   ephemeral port, or the httpx-backed client), mint a token with the
   `Tokens` fake-backed by the `FixedClock`, and assert on the
-  `{"detail","code"}` envelope body
+  `{"error":{"code","message"}}` envelope body
 - pytest-asyncio discipline: `asyncio_mode = "auto"` is configured in
   `pyproject.toml`, so an `async def test_...` needs no marker; a sync test
   that calls an async use case without awaiting it is a bug, and ruff's

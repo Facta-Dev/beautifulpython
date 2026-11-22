@@ -18,7 +18,7 @@ handler.
 
 Design FastAPI routes and the OpenAPI contract for <app> end to end: route
 URL+method, the pydantic v2 request model (validated at the edge by
-FastAPI), the `{"detail","code"}` envelope mapping, the regenerated
+FastAPI), the `{"error":{"code","message"}}` envelope mapping, the regenerated
 `specs/openapi.yaml` entry (produced by `scripts/export_openapi.py` from the
 app's own `app.openapi()`), route registration in
 `src/app/features/<slug>/module.py` `register(app, service)`, and the
@@ -82,7 +82,7 @@ CHECKLIST
   [ ] pydantic v2 request/response models declared in http.py
   [ ] make generate run and specs/openapi.yaml committed; make gen-check clean
   [ ] route registered in module.py register() (not inline in the bin)
-  [ ] envelope {"detail","code"} covers the failure modes; no leaky 500s
+  [ ] envelope {"error":{"code","message"}} covers the failure modes; no leaky 500s
   [ ] Deps unchanged OR new field is a use case / small interface wired in src/app/bin/api.py
 ```
 
