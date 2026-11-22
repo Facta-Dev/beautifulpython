@@ -10,3 +10,4 @@ CLAUDE.local.md
 .claude/install-state.json
 .claude/backups/
 .claude/logs/
+.codegraph/
