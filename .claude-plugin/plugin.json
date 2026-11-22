@@ -1,6 +1,6 @@
 {
   "name": "beautiful-python",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Write, review, port, and enforce idiomatic Python: three skills distilled from PEP 8 and PEP 20, PEP 257, the Google Python Style Guide, Effective Python, and the typing docs, plus a drop-in ruff and mypy config.",
   "author": {
     "name": "Carolina Fogliato",
